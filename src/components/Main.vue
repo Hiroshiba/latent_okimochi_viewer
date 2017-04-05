@@ -1,5 +1,5 @@
 <template>
-  <div>okimochi</div>
+  <div>{{ $store.state.config.apiUrl }}</div>
 </template>
 
 <script>
