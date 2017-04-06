@@ -1,4 +1,5 @@
 {
-  "api_url": "http://localhost:8888/",
-  "latent_shape": [100]
+  "api_url": "http://localhost:8888/image/latent_draw",
+  "query_name": "latent",
+  "latent_shape": [4096, 1, 1]
 }
