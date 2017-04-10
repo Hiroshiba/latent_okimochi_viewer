@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import ops from 'ndarray-ops'
 import numjs from 'NumJs'
 
@@ -17,5 +18,9 @@ export default {
     const x = numjs.random(shape)
     const y = numjs.random(shape)
     return x.log().multiply(-2.0, false).sqrt(false).multiply(numjs.sin(y.multiply(2.0 * Math.PI, false)), false)
+  },
+
+  getId () {
+    return crypto.randomBytes(8).toString('hex')
   }
 }

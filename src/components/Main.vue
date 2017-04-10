@@ -1,38 +1,30 @@
 <template>
-  <div>
-    <button @click="addImage">追加</button>
-    <template v-for="url in urls">
-      <img :src="url">
-    </template>
+  <div style="display: flex; height: 100vh">
+    <control style="flex: 4"/>
+    <div style="flex: 6; overflow-y: scroll">
+      <div v-for="_latentList in latent">
+        <img v-for="_latent in _latentList" :src="drawnImageUrl[_latent.id]">
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-  import utlity from '@/utility'
+  import {mapState} from 'vuex'
+
+  import Control from './Control.vue'
 
   export default {
     data () {
-      return {
-        'urls': []
-      }
+      return {}
     },
 
-    methods: {
-      addImage () {
-        const latent = utlity.randomLatent(this.$store.state.config.latentShape)
+    components: {
+      Control
+    },
 
-        const body = new FormData()
-        body.append(this.$store.state.config.queryName, JSON.stringify(latent.tolist()))
-
-        fetch(this.$store.state.config.apiUrl, {
-          method: 'POST',
-          mode: 'cors',
-          body
-        })
-          .then(response => response.blob())
-          .then(blob => URL.createObjectURL(blob))
-          .then(url => this.urls.push(url))
-      }
+    computed: {
+      ...mapState(['latent', 'drawnImageUrl'])
     }
   }
 </script>
