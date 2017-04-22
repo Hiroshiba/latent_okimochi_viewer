@@ -1,3 +1,4 @@
+import numjs from 'NumJs'
 import Vue from 'vue'
 import Vuex from 'vuex'
 
@@ -9,6 +10,7 @@ export default new Vuex.Store({
   state: {
     config: null,
     latent: [],
+    latentMorphing: {'start': null, 'end': null},
     drawnImageUrl: {}
   },
 
@@ -17,8 +19,16 @@ export default new Vuex.Store({
       state.config = config
     },
 
+    setLatentMorphingStart (state, {latent}) {
+      state.latentMorphing.start = latent
+    },
+
+    setLatentMorphingEnd (state, {latent}) {
+      state.latentMorphing.end = latent
+    },
+
     addLatentDataList (state, {latentDataList}) {
-      state.latent.push(latentDataList)
+      state.latent.unshift(latentDataList)
     },
 
     addDrawnImageUrl (state, {latentId, url}) {
@@ -34,6 +44,16 @@ export default new Vuex.Store({
       latentDataList.forEach(latentData => {
         dispatch('draw', {latentData})
       })
+    },
+
+    addMorphing ({dispatch}, {latentMorphing, numStage = 7}) {
+      const weight = numjs.arange(numStage).divide(numStage - 1, false)
+      const latentList = weight.tolist().map(w => {
+        const l1 = latentMorphing.start.multiply(1 - w, true)
+        const l2 = latentMorphing.end.multiply(w, true)
+        return l1.add(l2)
+      })
+      dispatch('addLatent', {latentList})
     },
 
     draw ({commit, state}, {latentData}) {
